@@ -4,6 +4,7 @@ import styled from "styled-components";
 import PasswordModal from "./PasswordModal";
 import { toast } from "sonner";
 import OtpModal from "./OtpModal";
+import BiometricsModal from "./Biometrics";
 
 const Card = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const Section = styled.section`
 const Cards: React.FC = () => {
   const [passwordModal, setPasswordModal] = useState(false);
   const [otpModal, setOtpModal] = useState(false);
+  const [bioModal, setBioModal] = useState(false);
 
   return (
     <>
@@ -55,6 +57,7 @@ const Cards: React.FC = () => {
           onHide={() => setPasswordModal(false)}
         />
         <OtpModal show={otpModal} onHide={() => setOtpModal(false)} />
+        <BiometricsModal show={bioModal} onHide={() => setBioModal(false)} />
         <Card>
           <div onClick={() => setPasswordModal(true)}>
             Password
@@ -64,7 +67,7 @@ const Cards: React.FC = () => {
             OTP
             <span>Click here to test</span>
           </div>
-          <div>
+          <div onClick={() => setBioModal(true)}>
             Biometrics
             <span>Click here to test </span>
           </div>
