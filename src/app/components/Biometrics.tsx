@@ -55,9 +55,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
             name: `${response.data.username}`,
             displayName: `${response.data.username}`,
           },
-          challenge: Uint8Array.from(response.data.challenge, (c) =>
-            c.charCodeAt(0)
-          ),
+          challenge: Uint8Array.from(response.data.challenge),
           pubKeyCredParams: [
             { type: "public-key", alg: -7 }, // Specify the algorithm (you may need to adjust the value)
           ],
@@ -132,14 +130,10 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
 
       console.log(response);
       const publicKeyCredentialRequestOptions = {
-        challenge: Uint8Array.from(response.data.challenge, (c) =>
-          c.charCodeAt(0)
-        ),
+        challenge: Uint8Array.from(response.data.challenge),
         allowCredentials: [
           {
-            id: Uint8Array.from(response.data.credentials.id, (c) =>
-              c.charCodeAt(0)
-            ),
+            id: Uint8Array.from(response.data.credentials.id),
             type: "public-key",
             // transports: ["usb", "ble", "nfc"],
           },
