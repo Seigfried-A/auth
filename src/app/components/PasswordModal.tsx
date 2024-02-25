@@ -17,6 +17,10 @@ interface PasswordModalProps {
 const schema = yup.object().shape({
   password: yup.string().required(),
 });
+
+
+const URL = "https://auth-back-iota.vercel.app/";
+
 const PasswordModal: React.FC<PasswordModalProps> = (props) => {
   const [passwordModal, setPasswordModal] = useState(props.show);
 
@@ -38,7 +42,7 @@ const PasswordModal: React.FC<PasswordModalProps> = (props) => {
             validationSchema={schema}
             onSubmit={async (values) => {
               await axios
-                .post("http://localhost:8080/auth/password-auth", values)
+                .post(`${URL}/auth/password-auth`, values)
                 .then(function (response) {
                   if (response.data) {
                     toast.success("Password saved successfully");

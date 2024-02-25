@@ -18,6 +18,8 @@ type Ivalues = {
   username: string;
 };
 
+
+const URL = "";
 const schema = yup.object().shape({
   username: yup.string().required(),
 });
@@ -36,10 +38,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/verifyBio",
-        body
-      );
+      const response = await axios.post(`${URL}/auth/verifyBio`, body);
       console.log(response.data);
       console.log(response.data.challenge);
 
@@ -84,7 +83,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
         },
       };
       const credentialResponse = await axios.post(
-        "http://localhost:8080/auth/verifyBio/response",
+        `${URL}/auth/verifyBio/response`,
         registrationData
       );
       console.log(credentialResponse);
@@ -106,7 +105,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await axios.post(`${URL}/auth/login`, {
         body,
       });
 

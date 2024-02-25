@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import InputGroup from "react-bootstrap/InputGroup";
 
+const URL = "http://localhost:8080";
 interface OtpModalProps {
   show: boolean;
   onHide: () => void;
@@ -52,7 +53,7 @@ const OtpModal: React.FC<OtpModalProps> = (props) => {
       return;
     }
     await axios
-      .post("http://localhost:8080/auth/sendOtp", values)
+      .post(`${URL}/auth/sendOtp`, values)
       .then(function (response) {
         if (response.data) {
           toast.success("Otp sent successfully", {
@@ -88,7 +89,7 @@ const OtpModal: React.FC<OtpModalProps> = (props) => {
           onSubmit={async (values: Values) => {
             console.log(values);
             await axios
-              .post("http://localhost:8080/auth/verifyOtp", values)
+              .post(`${URL}/auth/verifyOtp`, values)
               .then(function (response) {
                 if (response.data) {
                   toast.success("Otp verified!");
