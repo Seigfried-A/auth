@@ -19,7 +19,7 @@ const schema = yup.object().shape({
 });
 
 
-const URL = "https://auth-back-iota.vercel.app";
+const URL = "https://auth-back-z339.onrender.com";
 
 const PasswordModal: React.FC<PasswordModalProps> = (props) => {
   const [passwordModal, setPasswordModal] = useState(props.show);
