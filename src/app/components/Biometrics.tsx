@@ -48,7 +48,10 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
 
       const options: any = {
         publicKey: {
-          rp: { id: "auth-zeta-nine.vercel.app", name: "Biometric testers" },
+          rp: {
+            id: "https://auth-zeta-nine.vercel.app/",
+            name: "Biometric testers",
+          },
           user: {
             id: Buffer.from(response.data._id, "base64"),
             name: `${response.data.username}`,
@@ -56,7 +59,9 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
           },
           challenge: Uint8Array.from(response.data.challenge),
           pubKeyCredParams: [
-            { type: "public-key", alg: -7 }, // Specify the algorithm (you may need to adjust the value)
+            { type: "public-key", alg: -7 },
+            { type: "public-key", alg: -257 },
+            { type: "public-key", alg: -37 },
           ],
           authenticatorSelection: {
             authenticatorAttachment: "cross-platform",
