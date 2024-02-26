@@ -64,7 +64,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
             { type: "public-key", alg: -37 },
           ],
           authenticatorSelection: {
-            authenticatorAttachment: "cross-platform",
+            authenticatorAttachment: "platform",
           },
           timeout: 60000,
           attestation: "direct",
