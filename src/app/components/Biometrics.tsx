@@ -49,7 +49,7 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
       const options: any = {
         publicKey: {
           rp: {
-            id: "https://auth-zeta-nine.vercel.app/",
+            id: "https://auth-zeta-nine.vercel.app",
             name: "Biometric testers",
           },
           user: {
