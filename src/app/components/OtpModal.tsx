@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const URL = "http://localhost:8080";
+const URL = "https://biometrics-backend.onrender.com";
 interface OtpModalProps {
   show: boolean;
   onHide: () => void;
@@ -55,6 +55,7 @@ const OtpModal: React.FC<OtpModalProps> = (props) => {
     await axios
       .post(`${URL}/auth/sendOtp`, values)
       .then(function (response) {
+        console.log(response.data);
         if (response.data) {
           toast.success("Otp sent successfully", {
             position: "top-center",
@@ -65,6 +66,7 @@ const OtpModal: React.FC<OtpModalProps> = (props) => {
       .catch(function (error) {
         console.log(error);
         if (error) {
+          console.log(error);
           toast.error(error.response.data.error.message, {
             position: "top-center",
           });

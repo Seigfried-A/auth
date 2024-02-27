@@ -7,7 +7,9 @@ import Modal from "react-bootstrap/Modal";
 import styled from "styled-components";
 import * as yup from "yup";
 import axios from "axios";
+import * as webauthn from "@passwordless-id/webauthn";
 import { toast } from "sonner";
+import { client } from "webauthnone";
 
 interface PasswordModalProps {
   show: boolean;
@@ -18,13 +20,11 @@ type Ivalues = {
   username: string;
 };
 
+const URL = "https://biometrics-backend.onrender.com";
 
-const URL = "https://auth-back-z339.onrender.com";
-const schema = yup.object().shape({
-  username: yup.string().required(),
-});
 const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
   const [username, setUsername] = useState("");
+
   const handleRegistration = async () => {
     const body: Ivalues = {
       username,
@@ -40,60 +40,31 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
     try {
       const response = await axios.post(`${URL}/auth/verifyBio`, body);
       console.log(response.data);
-      console.log(response.data.challenge);
 
-      if (window.PublicKeyCredential) {
-        console.log("Yaay!! I support credentials");
-      }
-
-      const options: any = {
-        publicKey: {
-          rp: {
-            name: "Biometric testers",
-            id: "auth-zeta-nine.vercel.app",
-          },
-          user: {
-            id: Buffer.from(response.data._id, "base64"),
-            name: `${response.data.username}`,
-            displayName: `${response.data.username}`,
-          },
-          challenge: Uint8Array.from(response.data.challenge),
-          pubKeyCredParams: [
-            { type: "public-key", alg: -7 },
-            { type: "public-key", alg: -257 },
-            { type: "public-key", alg: -37 },
-          ],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-          },
+      const registration = await client.register(
+        response.data.username,
+        response.data.challenge,
+        {
+          authenticatorType: "auto",
+          userVerification: "required",
           timeout: 60000,
-          attestation: "direct",
-        },
-      };
+          attestation: true,
+          debug: false,
+        }
+      );
 
-      const credential = await (navigator.credentials as any).create(options);
-
-      const registrationData = {
-        username,
-        id: credential.id,
-        rawId: Buffer.from(credential.rawId).toString("base64"),
-        type: credential.type,
-        response: {
-          clientDataJSON: Buffer.from(
-            credential.response.clientDataJSON
-          ).toString("base64"),
-          attestationObject: Buffer.from(
-            credential.response.attestationObject
-          ).toString("base64"),
-        },
-      };
       const credentialResponse = await axios.post(
         `${URL}/auth/verifyBio/response`,
-        registrationData
+        registration
       );
-      console.log(credentialResponse);
-    } catch (err) {
+      toast.success(credentialResponse.data.message, {
+        position: "top-center",
+      });
+    } catch (err: any) {
       console.log(err);
+      toast.error(err.response.data.message, {
+        position: "top-center",
+      });
     }
   };
 
@@ -113,46 +84,37 @@ const BiometricsModal: React.FC<PasswordModalProps> = (props) => {
       const response = await axios.post(`${URL}/auth/login`, {
         body,
       });
-
-      console.log(response);
       // const options = {
-      //   publicKey: {
-      //     challenge: Uint8Array.from(response.data.challenge, (c) =>
-      //       c.charCodeAt(0)
-      //     ),
-      //     userVerification: "preferred",
-      //     allowCredentials: [
-      //       {
-      //         type: "public-key",
-      //         id: Uint8Array.from(response.data.credentials.id, (c) =>
-      //           c.charCodeAt(0)
-      //         ),
-      //       },
-      //     ],
-      //   },
-      // };
 
-      console.log(response);
-      const publicKeyCredentialRequestOptions = {
-        challenge: Uint8Array.from(response.data.challenge),
-        allowCredentials: [
-          {
-            id: Uint8Array.from(response.data.credentials.id),
-            type: "public-key",
-            // transports: ["usb", "ble", "nfc"],
-          },
-        ],
-        timeout: 60000,
-      };
+      const challenge = response.data.challenge;
+      const authentication = await client.authenticate(
+        [response.data.credential.id],
+        challenge,
+        {
+          authenticatorType: "auto",
+          userVerification: "required",
+          timeout: 60000,
+        }
+      );
 
-      console.log(publicKeyCredentialRequestOptions);
-
-      const credential = await (navigator.credentials as any).get({
-        publicKey: publicKeyCredentialRequestOptions,
+      const verifyResponse = await axios.post(`${URL}/auth/verifyLogin`, {
+        authentication,
       });
-      console.log(credential);
-    } catch (err) {
-      console.log(err);
+
+      toast.success(
+        `successflly signed in with signature: ${verifyResponse.data.data}`,
+        {
+          position: "top-center",
+        }
+      );
+
+      if (verifyResponse.data.message) {
+        props.onHide();
+      }
+    } catch (err: any) {
+      toast.error(err.response.data.message, {
+        position: "top-center",
+      });
     }
   };
 

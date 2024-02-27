@@ -19,8 +19,9 @@ const schema = yup.object().shape({
 });
 
 
-const URL = "https://auth-back-z339.onrender.com";
+// const URL = "https://auth-back-z339.onrender.com";
 
+const URL = "https://biometrics-backend.onrender.com";
 const PasswordModal: React.FC<PasswordModalProps> = (props) => {
   const [passwordModal, setPasswordModal] = useState(props.show);
 
@@ -47,6 +48,7 @@ const PasswordModal: React.FC<PasswordModalProps> = (props) => {
                   if (response.data) {
                     toast.success("Password saved successfully");
                     setPasswordModal(false);
+                    props.onHide()
                   }
                 })
                 .catch(function (error) {
